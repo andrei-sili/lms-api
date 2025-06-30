@@ -1,5 +1,6 @@
 # lms_api/settings/production.py
 
+import os
 from .base import *
 
 DEBUG = False
