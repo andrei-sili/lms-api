@@ -20,5 +20,5 @@ freeze:
 	pip freeze > requirements.txt
 
 startapp:
-	@read -p "App name: " app; \
-	python manage.py startapp $$app apps/$$app
+	python manage.py startapp $(app) apps/$(app)
+
