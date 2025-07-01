@@ -1,4 +1,7 @@
 # apps/users/models.py
+import uuid
+from datetime import timedelta
+from django.utils import timezone
 
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.db import models
@@ -8,6 +11,8 @@ class UserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
             raise ValueError("The Email field must be set")
+        if extra_fields.get('role') == 'admin' and not extra_fields.get('is_staff'):
+            raise ValueError("Admins must have is_staff=True")
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
@@ -45,3 +50,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class PasswordResetToken(models.Model):
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    token = models.UUIDField(default=uuid.uuid4, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def is_expired(self):
+        return timezone.now() > self.created_at + timedelta(hours=1)
+
+    def __str__(self):
+        return f"PasswordResetToken(user={self.user.email}, token={self.token})"
