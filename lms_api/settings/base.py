@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     # apps project
     'apps.users',
+    'apps.courses',
 
 ]
 
