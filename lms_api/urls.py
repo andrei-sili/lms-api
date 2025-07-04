@@ -1,3 +1,4 @@
+# lms_api/urls.py
 """
 URL configuration for lms_api project.
 
