@@ -4,7 +4,7 @@ from django.db import models
 from apps.users.models import User
 
 
-class Courses(models.Model):
+class Course(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     teacher = models.ForeignKey(User, on_delete=models.CASCADE, related_name='courses')
@@ -15,7 +15,7 @@ class Courses(models.Model):
         return self.title
 
 
-class Categories(models.Model):
+class Category(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
 
@@ -23,9 +23,9 @@ class Categories(models.Model):
         return self.name
 
 
-class CourseCategories(models.Model):
-    course = models.ForeignKey(Courses, on_delete=models.CASCADE, related_name='categories')
-    category = models.ForeignKey(Categories, on_delete=models.CASCADE, related_name='courses')
+class CourseCategory(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='categories')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='courses')
 
     def __str__(self):
         return f"{self.course.title} - {self.category.name}"
