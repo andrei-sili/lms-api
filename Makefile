@@ -20,5 +20,5 @@ freeze:
 	pip freeze > requirements.txt
 
 startapp: # ex: make startapp app=user
-	python manage.py startapp $(app) apps/$(app) # re: python manage.py startapp user apps/user
+	python manage.py startapp $(app) apps/$(app)
 
