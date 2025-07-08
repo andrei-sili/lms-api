@@ -13,7 +13,7 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'title',
-            'descriptions',
+            'description',
             'teacher',
             'created_at',
             'price',
