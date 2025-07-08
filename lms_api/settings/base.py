@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     # apps project
     'apps.users',
     'apps.courses',
+    'apps.lessons',
+    'apps.quizzes',
 
 ]
 
