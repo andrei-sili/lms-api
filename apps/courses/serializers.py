@@ -40,6 +40,8 @@ class CategorySerializer(serializers.ModelSerializer):
     def validate_name(self, value):
         if not value.strip():
             raise serializers.ValidationError("Category name cannot be empty.")
+        if Category.objects.filter(name__iexact=value.strip()).exists():
+            raise serializers.ValidationError("A category with this name already exists.")
         return value
 
 
