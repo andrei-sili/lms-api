@@ -11,7 +11,7 @@ class Lesson(models.Model):
     video_url = models.URLField(blank=True)
     order = models.PositiveIntegerField(default=0)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
-    created_ad = models.DateField(auto_now_add=True)
+    created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.title
