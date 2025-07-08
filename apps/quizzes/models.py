@@ -11,3 +11,20 @@ class Quiz(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Question(models.Model):
+    quiz = models.ForeignKey('Quiz', on_delete=models.CASCADE, related_name='questions')
+    text = models.TextField()
+
+    def __str__(self):
+        return f"Question: {self.text[:50]}..."
+
+
+class Answer(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
+    text = models.TextField()
+    is_correct = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"Answer: {self.text[:50]}..."
