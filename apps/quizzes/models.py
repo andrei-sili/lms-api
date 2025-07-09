@@ -15,7 +15,7 @@ class Quiz(models.Model):
 
 class Question(models.Model):
     quiz = models.ForeignKey('Quiz', on_delete=models.CASCADE, related_name='questions')
-    text = models.TextField()
+    text = models.TextField(blank=False, null=False)
 
     def __str__(self):
         return f"Question: {self.text[:50]}..."
@@ -23,7 +23,7 @@ class Question(models.Model):
 
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
-    text = models.TextField()
+    text = models.TextField(blank=False, null=False)
     is_correct = models.BooleanField(default=False)
 
     def __str__(self):
