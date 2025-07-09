@@ -21,6 +21,7 @@ class LessonSerializer(serializers.ModelSerializer):
             'course',
             'quizzes',
             'created_at'
+            'created_by'
         ]
 
-        read_only_fields = ['id', 'course', 'created_at']
+        read_only_fields = ['id', 'course', 'created_at', 'created_by']
