@@ -25,6 +25,11 @@ class CourseSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Title cannot be empty.")
         return value
 
+    def validate_price(self, value):
+        if value is not None and value <= 0:
+            raise serializers.ValidationError("The price must be positive.")
+        return value
+
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
