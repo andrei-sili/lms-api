@@ -1,8 +1,8 @@
 # apps/lessons/models.py
 
 from django.db import models
-
 from apps.courses.models import Course
+from django.conf import settings
 
 
 class Lesson(models.Model):
@@ -11,6 +11,11 @@ class Lesson(models.Model):
     video_url = models.URLField(blank=True)
     order = models.PositiveIntegerField(default=0)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lessons')
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='created_lessons'
+    )
     created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
