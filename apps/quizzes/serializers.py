@@ -43,9 +43,11 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ['text',
-                  'quiz',
-                  'answers']
+        fields = [
+                'text',
+                'quiz',
+                'answers'
+        ]
 
     def validate(self, attrs):
         answers_data = attrs.get('answers', [])
