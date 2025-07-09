@@ -10,6 +10,7 @@ from apps.quizzes.serializers import QuizSerializer
 class LessonSerializer(serializers.ModelSerializer):
     course = CourseSerializer(read_only=True)
     quizzes = QuizSerializer(many=True, read_only=True)
+    teacher = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = Lesson
@@ -20,8 +21,8 @@ class LessonSerializer(serializers.ModelSerializer):
             'order',
             'course',
             'quizzes',
-            'created_at'
-            'created_by'
+            'teacher',
+            'created_at',
         ]
 
-        read_only_fields = ['id', 'course', 'created_at', 'created_by']
+        read_only_fields = ['id', 'course', 'teacher', 'created_at']
