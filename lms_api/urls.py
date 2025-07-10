@@ -26,11 +26,15 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    # JWT endpoints
-    path('api/users/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/users/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/users/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    # JWT Auth
+    path('api/auth/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/auth/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/auth/token/verify/', TokenVerifyView.as_view(), name='token_verify'),
 
+    # Apps routes
     path('api/users/', include('apps.users.urls')),
-    path('api/', include('apps.courses.urls')),
+    path('api/courses/', include('apps.courses.urls')),
+    path('api/lessons/', include('apps.lessons.urls')),
+    path('api/quizzes/', include('apps.quizzes.urls')),
+
 ]
