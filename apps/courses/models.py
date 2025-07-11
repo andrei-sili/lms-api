@@ -29,3 +29,22 @@ class CourseCategory(models.Model):
 
     def __str__(self):
         return f"{self.course.title} - {self.category.name}"
+
+
+class Enrollment(models.Model):
+    class Status(models.TextChoices):
+        ACTIVE = 'active', 'Active'
+        COMPLETED = 'completed', 'Completed'
+        CANCELLED = 'cancelled', 'Cancelled'
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='enrollments')
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='enrollments')
+    enrolled_at = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(
+        max_length=20,
+        choices=Status.choices,
+        default=Status.ACTIVE,
+    )
+
+    def __str__(self):
+        return f"{self.user} - {self.course} - {self.status}"
