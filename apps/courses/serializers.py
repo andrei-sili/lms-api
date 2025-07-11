@@ -1,7 +1,8 @@
 # apps/courses/serializers.py
 
 from rest_framework import serializers
-from apps.courses.models import Course, Category, CourseCategory
+from apps.courses.models import Course, Category, CourseCategory, Enrollment
+from apps.users.models import User
 from apps.users.serializers import UserSerializer
 
 
@@ -67,4 +68,25 @@ class CourseCategorySerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if CourseCategory.objects.filter(course=attrs['course'], category=attrs['category']).exists():
             raise serializers.ValidationError("This course-category relation already exists.")
+        return attrs
+
+
+class EnrollmentSerializer(serializers.ModelSerializer)
+
+    class Meta:
+        model = Enrollment
+        fields = [
+            'id',
+            'user',
+            'course',
+            'enrolled_at',
+            'status',
+        ]
+        read_only_fields = ['enrolled_at']
+
+    def validate(self, attrs):
+        user = attrs.get('user')
+        course = attrs.get('course')
+        if Enrollment.objects.filter(user=user, course=course).exists():
+            raise serializers.ValidationError("User is already enrolled in this course.")
         return attrs
