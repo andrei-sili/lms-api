@@ -1,7 +1,7 @@
 # apps/quiz/serializers.py
 
 from rest_framework import serializers
-from apps.quizzes.models import Quiz, Question, Answer
+from apps.quizzes.models import Quiz, Question, Answer, UserQuizAttempt
 
 
 class QuizReadSerializer(serializers.ModelSerializer):
