@@ -40,3 +40,6 @@ class EnrollmentViewSet(viewsets.ModelViewSet):
     queryset = Enrollment.objects.select_related('user', 'course').all()
     serializer_class = EnrollmentSerializer
     permission_classes = [IsAuthenticated & HasActiveSubscription]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
