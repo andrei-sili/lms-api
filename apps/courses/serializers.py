@@ -71,7 +71,7 @@ class CourseCategorySerializer(serializers.ModelSerializer):
         return attrs
 
 
-class EnrollmentSerializer(serializers.ModelSerializer)
+class EnrollmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Enrollment
