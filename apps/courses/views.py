@@ -4,9 +4,9 @@ from rest_framework import viewsets
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
 
-from .models import Course, Category, CourseCategory
-from .serializers import CourseSerializer, CategorySerializer, CourseCategorySerializer
-from .permissions import IsOwnerTeacherOrReadOnly, IsAdminOrReadOnly
+from .models import Course, Category, CourseCategory, Enrollment
+from .serializers import CourseSerializer, CategorySerializer, CourseCategorySerializer, EnrollmentSerializer
+from .permissions import IsOwnerTeacherOrReadOnly, IsAdminOrReadOnly, HasActiveSubscription
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -34,3 +34,9 @@ class CourseCategoryViewSet(viewsets.ModelViewSet):
         if self.request.user != course.teacher or self.request.user.role != 'teacher':
             raise PermissionDenied("You don't have permission to associate categories to this course.")
         serializer.save()
+
+
+class EnrollmentViewSet(viewsets.ModelViewSet):
+    queryset = Enrollment.objects.select_related('user', 'course').all()
+    serializer_class = EnrollmentSerializer
+    permission_classes = [IsAuthenticated & HasActiveSubscription]

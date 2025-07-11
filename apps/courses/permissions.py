@@ -1,6 +1,7 @@
 # apps/courses/permissions.py
 
 from rest_framework import permissions
+from rest_framework.permissions import BasePermission
 
 
 class IsOwnerTeacherOrReadOnly(permissions.BasePermission):
@@ -28,3 +29,12 @@ class IsAdminOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return request.user and request.user.is_authenticated
         return request.user and request.user.is_authenticated and request.user.is_staff
+
+
+class HasActiveSubscription(BasePermission):
+
+    message = "You need an active subscription to enroll in a course."
+
+    def has_permission(self, request, view):
+        user = request.user
+        return Subscription.objects.filter(user=user, status='active').exists()
