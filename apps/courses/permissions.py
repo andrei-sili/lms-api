@@ -3,6 +3,8 @@
 from rest_framework import permissions
 from rest_framework.permissions import BasePermission
 
+from apps.subscriptions.models import Subscription
+
 
 class IsOwnerTeacherOrReadOnly(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -32,7 +34,6 @@ class IsAdminOrReadOnly(permissions.BasePermission):
 
 
 class HasActiveSubscription(BasePermission):
-
     message = "You need an active subscription to enroll in a course."
 
     def has_permission(self, request, view):
