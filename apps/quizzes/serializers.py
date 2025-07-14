@@ -94,3 +94,15 @@ class QuestionSerializer(serializers.ModelSerializer):
                 Answer.objects.create(question=instance, **answer_data)
 
         return instance
+
+
+class UserQuizAttemptSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserQuizAttempt
+        fields = [
+            'user',
+            'quiz',
+            'score',
+            'completed_at',
+        ]
+        read_only_fields = ['user', 'completed_at']
