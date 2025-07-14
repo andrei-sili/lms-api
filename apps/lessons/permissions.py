@@ -1,8 +1,8 @@
 # apps/lessons/permissions.py
 
-from rest_framework.permissions import BasePermission
 from apps.courses.models import Enrollment
 from apps.lessons.models import Lesson
+from rest_framework.permissions import BasePermission, SAFE_METHODS
 
 
 class IsEnrolledInLessonCourse(BasePermission):
@@ -26,3 +26,19 @@ class IsEnrolledInLessonCourse(BasePermission):
             user=request.user,
             course=lesson.course
         ).exists()
+
+
+class IsCommentOwner(BasePermission):
+    """
+    - SAFE_METHODS (GET, HEAD, OPTIONS): all user
+    - POST (create): all users
+    - PUT/PATCH/DELETE:  comment owner
+    """
+
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS or request.method == 'POST'
+
+    def has_object_permission(self, request, view, obj):
+        if request.method in SAFE_METHODS:
+            return True
+        return obj.user == request.user

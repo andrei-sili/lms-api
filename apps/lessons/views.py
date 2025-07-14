@@ -4,9 +4,10 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
 from apps.courses.permissions import IsOwnerTeacherOrReadOnly, HasActiveSubscription
-from apps.lessons.models import Lesson, Attachment
-from apps.lessons.permissions import IsEnrolledInLessonCourse
-from apps.lessons.serializers import LessonReadSerializer, LessonWriteSerializer, AttachmentSerializer
+from apps.lessons.models import Lesson, Attachment, Comment
+from apps.lessons.permissions import IsEnrolledInLessonCourse, IsCommentOwner
+from apps.lessons.serializers import LessonReadSerializer, LessonWriteSerializer, AttachmentSerializer, \
+    CommentSerializer
 
 
 class LessonViewSet(viewsets.ModelViewSet):
@@ -26,3 +27,15 @@ class AttachmentViewSet(viewsets.ModelViewSet):
     queryset = Attachment.objects.all()
     serializer_class = AttachmentSerializer
     permission_classes = [IsAuthenticated, HasActiveSubscription, IsEnrolledInLessonCourse]
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated, HasActiveSubscription, IsEnrolledInLessonCourse, IsCommentOwner]
+
+    def get_queryset(self):
+        return Comment.objects.select_related('user', 'lesson')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+

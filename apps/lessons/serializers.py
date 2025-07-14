@@ -3,7 +3,7 @@
 from rest_framework import serializers
 from apps.courses.models import Course
 from apps.courses.serializers import CourseSerializer
-from apps.lessons.models import Lesson, Attachment
+from apps.lessons.models import Lesson, Attachment, Comment
 from apps.quizzes.serializers import QuizReadSerializer
 import requests
 
@@ -80,3 +80,17 @@ class AttachmentSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Unable to access the file URL.")
 
         return value
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = [
+            'id',
+            'user',
+            'lesson',
+            'content',
+            'created_at',
+        ]
+
+        read_only_fields = ['user']
