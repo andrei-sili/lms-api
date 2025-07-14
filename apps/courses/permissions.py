@@ -34,7 +34,7 @@ class IsAdminOrReadOnly(permissions.BasePermission):
 
 
 class HasActiveSubscription(BasePermission):
-    message = "You need an active subscription to enroll in a course."
+    message = "You need an active subscription"
 
     def has_permission(self, request, view):
         user = request.user
