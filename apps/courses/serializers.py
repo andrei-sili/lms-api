@@ -1,7 +1,8 @@
 # apps/courses/serializers.py
 
 from rest_framework import serializers
-from apps.courses.models import Course, Category, CourseCategory, Enrollment
+from apps.courses.models import Course, Category, CourseCategory, Enrollment, Certificate
+from apps.lessons.models import Lesson, LessonProgress
 from apps.users.models import User
 from apps.users.serializers import UserSerializer
 
@@ -88,4 +89,27 @@ class EnrollmentSerializer(serializers.ModelSerializer):
         course = attrs.get('course')
         if Enrollment.objects.filter(user=user, course=course).exists():
             raise serializers.ValidationError("User is already enrolled in this course.")
+        return attrs
+
+
+class CertificateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Certificate
+        fields = ['id', 'user', 'course', 'issued_at', 'certificate_url']
+        read_only_fields = ['id', 'user', 'issued_at']
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        course = attrs['course']
+
+        if Certificate.objects.filter(user=user, course=course).exists():
+            raise serializers.ValidationError("Certificate already issued for this course.")
+
+        lessons = Lesson.objects.filter(course=course)
+        completed = LessonProgress.objects.filter(user=user, lesson__in=lessons, is_completed=True).count()
+
+        if completed < lessons.count():
+            raise serializers.ValidationError(
+                "You must complete all lessons in the course before receiving the certificate.")
+
         return attrs
