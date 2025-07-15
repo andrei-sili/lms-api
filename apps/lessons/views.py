@@ -2,12 +2,12 @@
 
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-
+from django.utils import timezone
 from apps.courses.permissions import IsOwnerTeacherOrReadOnly, HasActiveSubscription
-from apps.lessons.models import Lesson, Attachment, Comment
-from apps.lessons.permissions import IsEnrolledInLessonCourse, IsCommentOwner
+from apps.lessons.models import Lesson, Attachment, Comment, LessonProgress
+from apps.lessons.permissions import IsEnrolledInLessonCourse, IsCommentOwner, IsOwnerOfProgress
 from apps.lessons.serializers import LessonReadSerializer, LessonWriteSerializer, AttachmentSerializer, \
-    CommentSerializer
+    CommentSerializer, LessonProgressSerializer
 
 
 class LessonViewSet(viewsets.ModelViewSet):
@@ -39,3 +39,13 @@ class CommentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+
+class LessonProgressViewSet(viewsets.ModelViewSet):
+    serializer_class = LessonProgressSerializer
+    permission_classes = [IsAuthenticated, HasActiveSubscription, IsEnrolledInLessonCourse, IsOwnerOfProgress]
+
+    def get_queryset(self):
+        return LessonProgress.objects.filter(user=self.request.user).select_related('lesson')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user, completed_at=timezone.now())
