@@ -3,7 +3,7 @@
 from rest_framework import serializers
 from apps.courses.models import Course
 from apps.courses.serializers import CourseSerializer
-from apps.lessons.models import Lesson, Attachment, Comment
+from apps.lessons.models import Lesson, Attachment, Comment, LessonProgress
 from apps.quizzes.serializers import QuizReadSerializer
 import requests
 
@@ -94,3 +94,16 @@ class CommentSerializer(serializers.ModelSerializer):
         ]
 
         read_only_fields = ['user']
+
+
+class LessonProgressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LessonProgress
+        fields = [
+            'id',
+            'user',
+            'lesson',
+            'is_completed',
+            'completed_at'
+        ]
+        read_only_fields = ['user', 'completed_at']
