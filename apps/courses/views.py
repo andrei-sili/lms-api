@@ -3,10 +3,11 @@
 from rest_framework import viewsets
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import IsAuthenticated
-
-from .models import Course, Category, CourseCategory, Enrollment
-from .serializers import CourseSerializer, CategorySerializer, CourseCategorySerializer, EnrollmentSerializer
-from .permissions import IsOwnerTeacherOrReadOnly, IsAdminOrReadOnly, HasActiveSubscription
+from django.utils import timezone
+from .models import Course, Category, CourseCategory, Enrollment, Certificate
+from .serializers import CourseSerializer, CategorySerializer, CourseCategorySerializer, EnrollmentSerializer, \
+    CertificateSerializer
+from .permissions import IsOwnerTeacherOrReadOnly, IsAdminOrReadOnly, HasActiveSubscription, IsCertificateOwner
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -43,3 +44,14 @@ class EnrollmentViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class CertificateViewSet(viewsets.ModelViewSet):
+    serializer_class = CertificateSerializer
+    permission_classes = [IsAuthenticated, IsCertificateOwner]
+
+    def get_queryset(self):
+        return Certificate.objects.filter(user=self.request.user).select_related('course')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user, issued_at=timezone.now())
