@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'apps.lessons',
     'apps.quizzes',
     'apps.subscriptions',
+    'apps.payments',
 
 ]
 
