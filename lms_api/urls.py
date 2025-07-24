@@ -37,5 +37,5 @@ urlpatterns = [
     path('api/lessons/', include('apps.lessons.urls')),
     path('api/quizzes/', include('apps.quizzes.urls')),
     path('api/subscriptions/', include('apps.subscriptions.urls')),
-
+    path('api/payments/', include('apps.payments.urls')),
 ]
