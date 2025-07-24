@@ -3,6 +3,10 @@ from decimal import Decimal
 
 from rest_framework import serializers
 from apps.payments.models import Payment
+import stripe
+from django.conf import settings
+
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
 class PaymentSerializer(serializers.ModelSerializer):
@@ -22,7 +26,8 @@ class PaymentSerializer(serializers.ModelSerializer):
             'provider',
             'raw_response',
         ]
-        read_only_fields = ['id', 'user', 'created_at', 'updated_at', 'transaction_id', 'raw_response', 'paid_at', 'status']
+        read_only_fields = ['id', 'user', 'created_at', 'updated_at', 'transaction_id', 'raw_response', 'paid_at',
+                            'status']
 
     def validate_amount(self, value):
         if value <= Decimal('0.00'):
@@ -51,5 +56,29 @@ class PaymentSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        return super().create(validated_data)
+        user = self.context['request'].user
+        amount = validated_data['amount']
+        currency = validated_data.get('currency', 'EUR')
+        method = validated_data.get('method')
+
+        intent = stripe.PaymentIntent.create(
+            amount=int(amount * 100),
+            currency=currency.lower(),
+            payment_method_types=[method],
+            description=f"Payment by {user.email}",
+            metadata={'user_id': user.id}
+        )
+
+        payment = Payment.objects.create(
+            user=user,
+            amount=amount,
+            currency=currency,
+            method=method,
+            provider='stripe',
+            transaction_id=intent['id'],
+            status='pending',
+            raw_response=intent
+        )
+
+        return payment
 
