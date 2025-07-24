@@ -24,6 +24,7 @@ class Payment(models.Model):
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
     method = models.CharField(max_length=20, choices=Method.choices)
     transaction_id = models.CharField(max_length=100, blank=True, null=True)
+    event_id = models.CharField(max_length=100, unique=True, blank=True, null=True)
     paid_at = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
